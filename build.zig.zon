@@ -1,0 +1,16 @@
+.{
+    .name = "ZIO-S",
+
+    .version = "0.1.0",
+
+    .minimum_zig_version = "0.13.0",
+
+    // Once all dependencies are fetched, `zig build` no longer requires internet connectivity.
+    .dependencies = .{},
+
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
