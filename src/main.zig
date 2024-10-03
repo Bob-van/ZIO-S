@@ -1,17 +1,18 @@
 const std = @import("std");
+const zios = @import("zio-s.zig");
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    var gpa_alloc = std.heap.GeneralPurposeAllocator(.{}){};
+    defer std.debug.assert(gpa_alloc.deinit() == .ok);
+    const gpa = gpa_alloc.allocator();
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    std.debug.print("allocator initialized\n", .{});
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    //0 means number of logical CPU cores available
+    var server = try zios.Http.init(std.net.Address.initIp4(.{ 0, 0, 0, 0 }, 64000), 0);
+    defer server.deinit();
 
-    try bw.flush(); // don't forget to flush!
+    std.debug.print("server initialized\n", .{});
+
+    try server.run(&gpa);
 }
