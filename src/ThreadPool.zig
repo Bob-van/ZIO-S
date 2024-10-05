@@ -99,7 +99,7 @@ pub fn deinit(self: *ThreadPool) void {
 /// The user provides a `callback` which is invoked when the *Task can run on a thread.
 pub const Task = struct {
     node: Node = .{},
-    callback: *const fn (*Task, zios.TaskData) void,
+    callback: *const fn (*Task) void,
     data: zios.TaskData,
 };
 
@@ -373,7 +373,7 @@ const Thread = struct {
                 is_waking = false;
 
                 const task: *Task = @fieldParentPtr("node", result.node);
-                (task.callback)(task, task.data);
+                (task.callback)(task);
             }
         }
     }
